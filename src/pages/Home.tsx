@@ -114,7 +114,11 @@ export default function Home() {
       </AnimatePresence>
 
       {/* BottomBar controlada pela Home para evitar erros de Prop */}
-      <BottomBar activeTab={activeTab} isTraining={isTraining} />
+      <BottomBar 
+  activeTab={activeTab} 
+  setActiveTab={setActiveTab} // Adicione isso aqui
+  isTraining={isTraining} 
+/>
     </MainLayout>
   );
 }
