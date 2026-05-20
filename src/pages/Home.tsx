@@ -3,15 +3,15 @@ import MainLayout from "../layouts/MainLayout";
 import Topbar from "../components/dashboard/Topbar";
 import TodayWorkout from "../components/dashboard/TodayWorkout";
 import ActiveWorkout from "../components/workout/ActiveWorkout";
+import BottomBar from "../components/dashboard/BottomBar";
 import { motion, AnimatePresence } from "framer-motion";
 import { Flame, Dumbbell, Trophy, ChevronRight, Activity } from "lucide-react";
 
 export default function Home() {
-  // Estado temporário até você configurar o Zustand
   const [isTraining, setIsTraining] = useState(false);
+  const [activeTab, setActiveTab] = useState("home");
 
   return (
-    
     <MainLayout>
       <Topbar />
 
@@ -23,12 +23,12 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
           >
-            {/* Botão temporário para voltar (Só pra você testar a UI) */}
+            {/* Botão para voltar e testar a UI */}
             <button 
               onClick={() => setIsTraining(false)}
-              className="mb-4 text-xs font-bold text-zinc-500 underline"
+              className="mb-6 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white transition-colors"
             >
-              ← Back to Dashboard
+              ← Cancel Workout
             </button>
             <ActiveWorkout />
           </motion.div>
@@ -81,7 +81,7 @@ export default function Home() {
 
             {/* Vitals Section */}
             <div className="mt-10 flex items-center justify-between px-2">
-              <h3 className="text-xl font-black tracking-tight">Your Vitals</h3>
+              <h3 className="text-xl font-black tracking-tight text-white">Your Vitals</h3>
               <button className="p-2 bg-zinc-900 rounded-full text-[#ff7a00] active:bg-zinc-800 transition-colors">
                 <ChevronRight size={20} />
               </button>
@@ -108,11 +108,13 @@ export default function Home() {
               />
             </section>
 
-            {/* Botão de Start foi movido para dentro do TodayWorkout ou podemos disparar o setIsTraining(true) dele */}
             <TodayWorkout onStart={() => setIsTraining(true)} />
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* BottomBar controlada pela Home para evitar erros de Prop */}
+      <BottomBar activeTab={activeTab} isTraining={isTraining} />
     </MainLayout>
   );
 }
