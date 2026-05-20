@@ -15,11 +15,32 @@ export default function MainLayout({
         text-white
       "
     >
-      <main className="px-5 pb-32 pt-6">
+
+      <div
+        className="
+          pointer-events-none
+          fixed
+          inset-0
+          bg-[radial-gradient(circle_at_top,rgba(255,122,0,0.15),transparent_35%)]
+        "
+      />
+
+      <main
+        className="
+          relative
+          mx-auto
+          w-full
+          max-w-md
+          px-5
+          pb-32
+          pt-6
+        "
+      >
         {children}
       </main>
 
       <BottomBar />
+
     </div>
   );
 }

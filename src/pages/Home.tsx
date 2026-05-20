@@ -16,6 +16,70 @@ export default function Home() {
 
       <section
         className="
+          mt-8
+          overflow-hidden
+          rounded-[36px]
+          bg-[#ff7a00]
+          p-6
+          text-black
+        "
+      >
+
+        <p className="text-sm font-medium opacity-70">
+          Weekly Progress
+        </p>
+
+        <h2
+          className="
+            mt-3
+            text-5xl
+            font-black
+            leading-none
+            tracking-tight
+          "
+        >
+          5
+        </h2>
+
+        <p className="mt-2 text-black/70">
+          workouts completed this week
+        </p>
+
+        <div
+          className="
+            mt-8
+            flex
+            items-center
+            gap-3
+          "
+        >
+
+          <div
+            className="
+              rounded-2xl
+              bg-black/10
+              p-4
+            "
+          >
+            <Flame size={24} />
+          </div>
+
+          <div>
+            <p className="text-sm opacity-70">
+              Current streak
+            </p>
+
+            <h3 className="text-2xl font-black">
+              7 days
+            </h3>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section
+        className="
           -mx-5
           mt-6
           flex
@@ -29,72 +93,46 @@ export default function Home() {
 
         <div
           className="
-            min-w-[180px]
-            rounded-[30px]
-            bg-[#ff7a00]
-            p-5
-            text-black
-          "
-        >
-          <div className="flex items-center justify-between">
-            <Flame size={24} />
-
-            <span className="text-sm font-medium">
-              Calories
-            </span>
-          </div>
-
-          <h2 className="mt-8 text-4xl font-black">
-            2,450
-          </h2>
-        </div>
-
-        <div
-          className="
-            min-w-[180px]
-            rounded-[30px]
+            min-w-[170px]
+            rounded-[28px]
             bg-[#18181b]
             p-5
           "
         >
-          <div className="flex items-center justify-between">
-            <Dumbbell
-              size={24}
-              className="text-[#ff7a00]"
-            />
-
-            <span className="text-sm text-zinc-400">
-              Workouts
-            </span>
-          </div>
-
-          <h2 className="mt-8 text-4xl font-black">
-            5
-          </h2>
-        </div>
-
-        <div
-          className="
-            min-w-[180px]
-            rounded-[30px]
-            bg-[#18181b]
-            p-5
-          "
-        >
-          <div className="flex items-center justify-between">
-            <Trophy
-              size={24}
-              className="text-[#ff7a00]"
-            />
-
-            <span className="text-sm text-zinc-400">
-              PRs
-            </span>
-          </div>
+          <Dumbbell
+            className="text-[#ff7a00]"
+            size={24}
+          />
 
           <h2 className="mt-8 text-4xl font-black">
             12
           </h2>
+
+          <p className="mt-1 text-zinc-500">
+            Exercises
+          </p>
+        </div>
+
+        <div
+          className="
+            min-w-[170px]
+            rounded-[28px]
+            bg-[#18181b]
+            p-5
+          "
+        >
+          <Trophy
+            className="text-[#ff7a00]"
+            size={24}
+          />
+
+          <h2 className="mt-8 text-4xl font-black">
+            4
+          </h2>
+
+          <p className="mt-1 text-zinc-500">
+            PRs achieved
+          </p>
         </div>
 
       </section>
