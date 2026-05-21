@@ -58,7 +58,7 @@ export default function Home() {
         </h2>
       </div>
 
-      <div className="bg-black p-3 rounded-xl shadow-2xl">
+      <div className="bg-black p-3 rounded-20px shadow-2xl">
         <Trophy className="text-[#ff7a00]" size={24} />
       </div>
     </div>
