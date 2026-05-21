@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
+// Importe o cliente do supabase do seu arquivo de configuração
+import { supabase } from "../lib/supabase"; 
 import {
   BookOpen,
   Calculator,
@@ -31,27 +33,52 @@ const secondaryItems = [
   { icon: MessageSquare, label: "Support & Feedback", badge: null },
 ];
 
-// Simulando dados que virão do seu banco de dados futuramente
-const stats = [
-  { num: "127", label: "Workouts" },
-  { num: "38", label: "Exercises" },
-  { num: "4", label: "Tools" },
-];
-
 export default function More() {
-  // Estados para controle de UI
+  // --- ESTADOS ---
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  
-  // Estados para a Calculadora 1RM
   const [weight, setWeight] = useState<string>("");
   const [reps, setReps] = useState<string>("");
+  const [stats, setStats] = useState([
+    { num: "0", label: "Workouts" },
+    { num: "0", label: "Exercises" },
+    { num: "4", label: "Tools" },
+  ]);
 
-  // Cálculo de 1RM (Fórmula de Epley)
+  // --- BUSCA DE DADOS REAIS (SUPABASE) ---
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        // Tentando buscar os dados reais
+        const { data: workouts, error: wError } = await supabase
+          .from('workouts')
+          .select('id');
+
+        const { data: exercises, error: eError } = await supabase
+          .from('exercises')
+          .select('id');
+
+        if (wError) console.error("Erro Workouts:", wError.message);
+        if (eError) console.error("Erro Exercises:", eError.message);
+
+        setStats([
+          { num: String(workouts?.length || 0), label: "Workouts" },
+          { num: String(exercises?.length || 0), label: "Exercises" },
+          { num: "4", label: "Tools" },
+        ]);
+      } catch (error) {
+        console.error("Erro crítico na conexão:", error);
+      }
+    }
+
+    fetchStats();
+  }, []);
+  
+  // --- LÓGICA CALCULADORA 1RM ---
   const calculate1RM = () => {
     const w = parseFloat(weight);
     const r = parseFloat(reps);
     if (w > 0 && r > 0) {
-      return Math.round(w * (1 + r / 30));
+      return Math.round(w * (1 + r / 30)); // Fórmula de Epley
     }
     return 0;
   };
@@ -77,7 +104,7 @@ export default function More() {
 
       <div className="relative z-10 flex flex-col gap-8 pb-40 pt-4 px-1">
         
-        {/* Header */}
+        {/* Header com Stats do Banco */}
         <header className="border-b border-white/5 pb-6">
           <div className="flex items-center gap-2 mb-2">
             <motion.div
@@ -131,11 +158,11 @@ export default function More() {
               <motion.button
                 key={tool.id}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => tool.id === 'calc' && setActiveModal('calc')}
+                onClick={() => {
+                  if (tool.id === 'calc') setActiveModal('calc');
+                }}
                 className="relative overflow-hidden flex flex-col gap-7 p-5 rounded-[20px] text-left transition-all group bg-white/[0.02] border border-white/[0.06] hover:bg-[#ff6400]/10 hover:border-[#ff6400]/25"
               >
-                <div className="absolute top-0 right-0 w-16 h-16 pointer-events-none bg-[radial-gradient(circle_at_top_right,rgba(255,100,0,0.15),transparent_70%)]" />
-
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-[#ff6400]/10 border border-[#ff6400]/15">
                   <tool.icon size={20} className="text-[#ff6400]" />
                 </div>
@@ -152,7 +179,7 @@ export default function More() {
                   </p>
                 </div>
 
-                <span className="absolute bottom-4 right-4 text-[#ff6400]/30 text-sm transition-all group-hover:text-[#ff6400] group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                <span className="absolute bottom-4 right-4 text-[#ff6400]/30 text-sm transition-all group-hover:text-[#ff6400]">
                   ↗
                 </span>
               </motion.button>
@@ -160,7 +187,7 @@ export default function More() {
           </div>
         </section>
 
-        {/* General Items */}
+        {/* General Section */}
         <section>
           <div className="flex items-center gap-2 mb-3">
             <p className="text-white/20 font-mono text-[10px] font-bold uppercase tracking-[0.35em]">
@@ -177,17 +204,16 @@ export default function More() {
                 className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-white/[0.01] border border-white/[0.04] hover:bg-white/[0.03] hover:border-white/[0.08] transition-colors"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/[0.04]">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/[0.04]">
                     <item.icon size={16} className="text-white/40" />
                   </div>
                   <span 
-                    className="text-white/65 uppercase italic font-bold text-[15px] tracking-tight"
+                    className="text-white/65 uppercase italic font-bold text-[15px]"
                     style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
                   >
                     {item.label}
                   </span>
                 </div>
-
                 {item.badge ? (
                   <span className="text-[#ff6400] font-bold text-[9px] uppercase tracking-widest rounded-md px-2 py-0.5 bg-[#ff6400]/10 border border-[#ff6400]/20">
                     {item.badge}
@@ -200,37 +226,23 @@ export default function More() {
           </div>
         </section>
 
-        {/* Promo Card */}
+        {/* Promo Card Premium */}
         <motion.div
           whileTap={{ scale: 0.98 }}
           className="relative overflow-hidden rounded-[24px] p-7 cursor-pointer bg-[#ff6400]"
         >
           <div className="absolute top-[-60px] right-[60px] w-20 h-[200px] bg-white/10 rotate-[20deg] pointer-events-none" />
-
           <span className="inline-block text-[9px] font-bold uppercase tracking-[0.35em] rounded-md px-2.5 py-1 mb-3 text-black/50 bg-black/10">
             Limited Offer
           </span>
-
-          <h2 
-            className="text-black uppercase italic leading-none font-black text-[30px]"
-            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-          >
-            Nexus<br />Premium
-          </h2>
-
-          <p className="font-semibold uppercase text-[11px] mt-2 max-w-[160px] leading-relaxed text-black/60 tracking-wider">
-            Unlock advanced analytics & custom workout plans
-          </p>
-
+          <h2 className="text-black uppercase italic leading-none font-black text-[30px] font-barlow">Nexus<br />Premium</h2>
           <button className="mt-5 flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl font-bold uppercase text-[12px] tracking-[0.2em] font-barlow">
-            <Crown size={14} />
-            Upgrade Now
+            <Crown size={14} /> Upgrade Now
           </button>
-
           <Dumbbell size={130} className="absolute -right-5 -bottom-5 -rotate-12 pointer-events-none text-black/10" />
         </motion.div>
 
-        {/* MODAL CALCULADORA 1RM */}
+        {/* --- MODAIS --- */}
         <AnimatePresence>
           {activeModal === 'calc' && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
@@ -238,73 +250,34 @@ export default function More() {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="relative w-full max-w-sm bg-[#0a0a0a] border border-[#ff6400]/30 rounded-[32px] p-8 shadow-2xl overflow-hidden"
+                className="relative w-full max-w-sm bg-[#0a0a0a] border border-[#ff6400]/30 rounded-[32px] p-8 shadow-2xl"
               >
-                {/* Efeito de brilho no modal */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#ff6400]/10 blur-3xl rounded-full" />
-                
-                <div className="relative z-10">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-black italic text-[#ff6400] uppercase font-barlow tracking-tight">
-                      1RM Calculator
-                    </h2>
-                    <button 
-                      onClick={() => setActiveModal(null)}
-                      className="p-2 bg-white/5 rounded-full text-white/40 hover:text-white transition-colors"
-                    >
-                      <X size={20} />
-                    </button>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-black italic text-[#ff6400] uppercase font-barlow">1RM Calc</h2>
+                  <button onClick={() => setActiveModal(null)} className="p-2 text-white/20 hover:text-white">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1">Weight (kg)</label>
+                    <input 
+                      type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="0"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold text-xl outline-none focus:border-[#ff6400]/50"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1">Reps</label>
+                    <input 
+                      type="number" value={reps} onChange={(e) => setReps(e.target.value)} placeholder="0"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold text-xl outline-none focus:border-[#ff6400]/50"
+                    />
                   </div>
 
-                  <div className="space-y-5">
-                    <div>
-                      <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1 mb-1.5 block">
-                        Weight (kg)
-                      </label>
-                      <input 
-                        type="number"
-                        inputMode="decimal"
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                        placeholder="0"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold text-xl focus:outline-none focus:border-[#ff6400]/50 transition-all shadow-inner"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1 mb-1.5 block">
-                        Reps (max effort)
-                      </label>
-                      <input 
-                        type="number"
-                        inputMode="numeric"
-                        value={reps}
-                        onChange={(e) => setReps(e.target.value)}
-                        placeholder="0"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold text-xl focus:outline-none focus:border-[#ff6400]/50 transition-all shadow-inner"
-                      />
-                    </div>
-
-                    <motion.div 
-                      animate={calculate1RM() > 0 ? { scale: [1, 1.02, 1] } : {}}
-                      className="bg-[#ff6400] rounded-[24px] p-7 text-center shadow-[0_20px_40px_rgba(255,100,0,0.2)] mt-4"
-                    >
-                      <p className="text-black/60 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
-                        Estimated Max
-                      </p>
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-black text-6xl font-black italic font-barlow leading-none">
-                          {calculate1RM()}
-                        </span>
-                        <span className="text-black text-xl font-black italic font-barlow">
-                          KG
-                        </span>
-                      </div>
-                    </motion.div>
-
-                    <p className="text-[9px] text-white/20 text-center uppercase font-bold tracking-widest mt-4">
-                      Formula: Epley • 1RM = W × (1 + R / 30)
-                    </p>
+                  <div className="bg-[#ff6400] rounded-2xl p-6 text-center mt-4 shadow-lg shadow-[#ff6400]/20">
+                    <p className="text-black/60 text-[10px] font-black uppercase tracking-widest">Max Power</p>
+                    <p className="text-black text-5xl font-black italic font-barlow">{calculate1RM()} KG</p>
                   </div>
                 </div>
               </motion.div>

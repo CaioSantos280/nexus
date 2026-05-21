@@ -1,6 +1,12 @@
-const url = import.meta.env.VITE_SUPABASE_URL;
+import { createClient } from '@supabase/supabase-js';
 
-const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log(url);
-console.log(key);
+// Verifica se as variáveis existem para evitar erros silenciosos
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("Erro: Variáveis do Supabase não encontradas no arquivo .env");
+}
+
+// Cria e exporta o cliente
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

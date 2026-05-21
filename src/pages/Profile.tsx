@@ -1,5 +1,5 @@
 import MainLayout from "../layouts/MainLayout";
-import { useWorkoutStore } from "../store/useWorkoutStore"; // Importando sua Store
+import { useWorkoutStore } from "../store/useWorkoutStore"; 
 import {
   Bell,
   LogOut,
@@ -9,21 +9,26 @@ import {
   UserPen,
   ShieldCheck,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import EditProfileModal from "../components/modals/EditProfileModal";
 
 export default function Profile() {
-  // Pegando dados da sua Store
-  const { weeklyProgress, setActiveTab } = useWorkoutStore();
+  const user = useWorkoutStore((state) => state.user);
+  const weeklyProgress = useWorkoutStore((state) => state.weeklyProgress);
+  const logout = useWorkoutStore((state) => state.logout);
   
-  // Lógica simples: Dias concluídos na semana viram parte do Streak
-  const completedDays = weeklyProgress.filter(d => d.completed).length;
-  const currentStreak = completedDays > 0 ? completedDays + 12 : 0; // Exemplo: 12 base + progresso atual
+  // Controle do Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const completedDays = weeklyProgress?.filter(d => d.completed).length || 0;
+  const currentStreak = completedDays > 0 ? completedDays + 12 : 0;
 
   return (
     <MainLayout>
-      <div className="relative flex flex-col gap-0 pb-40 overflow-hidden">
+      <div className="relative flex flex-col gap-0 pb-40 overflow-hidden px-4">
 
-        {/* Background grid - O toque de design do Claude */}
+        {/* Background grid */}
         <div
           className="pointer-events-none absolute inset-0 z-0"
           style={{
@@ -47,8 +52,7 @@ export default function Profile() {
           {/* ── TOP BAR ── */}
           <div className="flex items-center justify-between pt-5">
             <span
-              className="uppercase text-white/20 tracking-[0.32em]"
-              style={{ fontFamily: "monospace", fontSize: "9px" }}
+              className="uppercase text-white/20 tracking-[0.32em] font-mono text-[9px]"
             >
               Nexus Protocol
             </span>
@@ -61,7 +65,6 @@ export default function Profile() {
           {/* ── HERO / AVATAR ── */}
           <div className="flex flex-col items-center">
             <div className="relative w-[110px] h-[110px]">
-              {/* Spinning ring animado */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
@@ -74,13 +77,11 @@ export default function Profile() {
                   mask: "radial-gradient(farthest-side, transparent calc(100% - 1.5px), #fff calc(100% - 1.5px))",
                 }}
               />
-              {/* Círculo interno com Iniciais */}
               <div className="w-[110px] h-[110px] rounded-full bg-[#1a1a1a] border-2 border-[#111] flex items-center justify-center overflow-hidden">
                 <span
-                  className="text-[#ff6400] tracking-[2px]"
-                  style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "42px", lineHeight: 1 }}
+                  className="text-[#ff6400] tracking-[2px] font-bebas text-[42px]"
                 >
-                  CS
+                  {user?.firstName?.substring(0, 2).toUpperCase() || "CS"}
                 </span>
               </div>
               <button className="absolute bottom-[2px] right-[2px] w-[30px] h-[30px] rounded-full bg-[#ff6400] border-[2.5px] border-[#080808] flex items-center justify-center active:scale-90 transition-transform">
@@ -88,44 +89,32 @@ export default function Profile() {
               </button>
             </div>
 
-            <h2
-              className="mt-4 text-white tracking-[3px] uppercase"
-              style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "48px", lineHeight: 1 }}
-            >
-              Caio Santos
+            <h2 className="mt-4 text-white tracking-[3px] uppercase font-bebas text-[48px] leading-none text-center">
+              {user?.firstName || "Recruta"}
             </h2>
-            <p
-              className="mt-1 text-[#ff6400] uppercase tracking-[0.32em]"
-              style={{ fontFamily: "monospace", fontSize: "9px" }}
-            >
+            <p className="mt-1 text-[#ff6400] uppercase tracking-[0.32em] font-mono text-[9px]">
               Elite Athlete
             </p>
 
-            {/* Level badge conectado à lógica */}
+            {/* Level progress bar */}
             <div className="mt-4 flex items-center gap-3 rounded-[8px] border border-[#ff6400]/30 bg-[#ff6400]/10 px-4 py-[6px]">
-              <span
-                className="text-[#ff6400]"
-                style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "22px", lineHeight: 1 }}
-              >
-                24
+              <span className="text-[#ff6400] font-bebas text-[22px]">
+                {user?.level || 1}
               </span>
               <div className="w-px h-[22px] bg-[#ff6400]/25" />
               <div className="flex flex-col gap-1">
-                <span
-                  className="uppercase tracking-[0.2em] text-white/35"
-                  style={{ fontFamily: "monospace", fontSize: "8px" }}
-                >
+                <span className="uppercase tracking-[0.2em] text-white/35 font-mono text-[8px]">
                   XP Progress
                 </span>
                 <div className="w-32 h-1 rounded-sm bg-white/[0.08] overflow-hidden">
-                  <div className="h-full w-[68%] rounded-sm bg-[#ff6400]" />
+                  <div 
+                    className="h-full rounded-sm bg-[#ff6400]" 
+                    style={{ width: `${user?.xp || 0}%` }}
+                  />
                 </div>
               </div>
-              <span
-                className="text-[#ff6400]/60 tracking-[0.1em]"
-                style={{ fontFamily: "monospace", fontSize: "9px" }}
-              >
-                68%
+              <span className="text-[#ff6400]/60 tracking-[0.1em] font-mono text-[9px]">
+                {user?.xp || 0}%
               </span>
             </div>
           </div>
@@ -134,8 +123,8 @@ export default function Profile() {
           <div className="flex flex-col gap-2">
             <div className="grid grid-cols-3 gap-2">
               {[
-                { unit: "KG", value: "82", label: "Weight" },
-                { unit: "CM", value: "185", label: "Height" },
+                { unit: "KG", value: user?.weight || "0", label: "Weight" },
+                { unit: "CM", value: user?.height || "0", label: "Height" },
                 { unit: "YRS", value: "24", label: "Age" },
               ].map((s, i) => (
                 <div
@@ -143,35 +132,23 @@ export default function Profile() {
                   className="group relative flex flex-col items-center rounded-[14px] border border-white/[0.06] bg-white/[0.03] px-2 py-[14px] overflow-hidden"
                 >
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#ff6400] opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span
-                    className="text-[#ff6400]/60 tracking-[0.1em] uppercase mb-[6px]"
-                    style={{ fontFamily: "monospace", fontSize: "8px" }}
-                  >
+                  <span className="text-[#ff6400]/60 tracking-[0.1em] uppercase mb-[6px] font-mono text-[8px]">
                     {s.unit}
                   </span>
-                  <span
-                    className="text-white tracking-[1px]"
-                    style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "28px", lineHeight: 1 }}
-                  >
+                  <span className="text-white tracking-[1px] font-bebas text-[28px] leading-none">
                     {s.value}
                   </span>
-                  <span
-                    className="mt-[3px] uppercase tracking-[0.25em] text-white/20"
-                    style={{ fontFamily: "monospace", fontSize: "8px" }}
-                  >
+                  <span className="mt-[3px] uppercase tracking-[0.25em] text-white/20 font-mono text-[8px]">
                     {s.label}
                   </span>
                 </div>
               ))}
             </div>
 
-            {/* Performance card */}
+            {/* Performance + Streak Card */}
             <div className="flex items-center gap-4 rounded-[14px] border border-white/[0.05] bg-white/[0.02] px-[18px] py-4">
               <div className="flex-1">
-                <span
-                  className="block uppercase tracking-[0.28em] text-white/25 mb-2"
-                  style={{ fontFamily: "monospace", fontSize: "8px" }}
-                >
+                <span className="block uppercase tracking-[0.28em] text-white/25 mb-2 font-mono text-[8px]">
                   Performance
                 </span>
                 <div className="flex flex-col gap-[6px]">
@@ -181,10 +158,7 @@ export default function Profile() {
                     { name: "Recovery", val: 62 },
                   ].map((p) => (
                     <div key={p.name} className="flex items-center gap-[10px]">
-                      <span
-                        className="w-[60px] flex-shrink-0 uppercase tracking-[0.12em] text-white/45"
-                        style={{ fontSize: "10px", fontWeight: 600 }}
-                      >
+                      <span className="w-[60px] flex-shrink-0 uppercase tracking-[0.12em] text-white/45 font-bold text-[10px]">
                         {p.name}
                       </span>
                       <div className="flex-1 h-[3px] rounded-sm bg-white/[0.07] overflow-hidden">
@@ -193,10 +167,7 @@ export default function Profile() {
                           style={{ width: `${p.val}%` }}
                         />
                       </div>
-                      <span
-                        className="w-[26px] text-right text-white/50 flex-shrink-0"
-                        style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "14px" }}
-                      >
+                      <span className="w-[26px] text-right text-white/50 flex-shrink-0 font-bebas text-[14px]">
                         {p.val}
                       </span>
                     </div>
@@ -204,69 +175,55 @@ export default function Profile() {
                 </div>
               </div>
 
-              {/* Streak Dinâmico vindo da Store */}
+              {/* Day Streak Dinâmico */}
               <div className="flex-shrink-0 flex flex-col items-center rounded-[12px] border border-[#ff6400]/20 bg-[#ff6400]/[0.08] px-[14px] py-[10px]">
-                <span
-                  className="text-[#ff6400]"
-                  style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "34px", lineHeight: 1 }}
-                >
+                <span className="text-[#ff6400] font-bebas text-[34px] leading-none">
                   {currentStreak}
                 </span>
-                <span
-                  className="mt-[2px] text-center uppercase tracking-[0.2em] text-[#ff6400]/60 leading-tight"
-                  style={{ fontFamily: "monospace", fontSize: "7px" }}
-                >
-                  DAY<br/>STREAK
+                <span className="mt-[2px] text-center uppercase tracking-[0.2em] text-[#ff6400]/60 leading-tight font-mono text-[7px] white-space-pre">
+                  DAY{"\n"}STREAK
                 </span>
               </div>
             </div>
           </div>
 
           {/* ── MENU SECTIONS ── */}
-          <div className="flex flex-col gap-6">
-            <ProfileSection label="Account">
-              <ProfileMenuItem
-                icon={UserPen}
-                label="Edit Profile"
-                sub="Name, bio, photo"
-              />
-              <ProfileMenuItem
-                icon={Medal}
-                label="Achievements"
-                sub="Badges & milestones"
-                badge="12"
-              />
-              <ProfileMenuItem
-                icon={Bell}
-                label="Notifications"
-                sub="Alerts, reminders"
-              />
-            </ProfileSection>
+<div className="flex flex-col gap-6">
+  <ProfileSection label="Account">
+    <ProfileMenuItem 
+      icon={UserPen} 
+      label="Edit Profile" 
+      sub="Name, weight, height" 
+      onClick={() => setIsModalOpen(true)} // ADICIONE ISSO AQUI
+    />
+    <ProfileMenuItem icon={Medal} label="Achievements" sub="Badges & milestones" badge="12" />
+    <ProfileMenuItem icon={Bell} label="Notifications" sub="Alerts, reminders" />
+  </ProfileSection>
 
-            <ProfileSection label="Privacy & App">
-              <ProfileMenuItem
-                icon={ShieldCheck}
-                label="Privacy Policy"
-                sub="Data & permissions"
-              />
-              <ProfileMenuItem
-                icon={LogOut}
-                label="Logout"
-                sub="Sign out of account"
-                danger
-                hideArrow
-                onClick={() => setActiveTab('home')} // Exemplo de ação
-              />
-            </ProfileSection>
-          </div>
+  <ProfileSection label="Privacy & App">
+    <ProfileMenuItem icon={ShieldCheck} label="Privacy Policy" sub="Data & permissions" />
+    <ProfileMenuItem
+      icon={LogOut}
+      label="Logout"
+      sub="Sign out of account"
+      danger
+      hideArrow
+      onClick={logout}
+    />
+  </ProfileSection>
+</div>
+
+{/* ── ADICIONE O MODAL AQUI ── */}
+<AnimatePresence>
+  {isModalOpen && (
+    <EditProfileModal onClose={() => setIsModalOpen(false)} />
+  )}
+</AnimatePresence>
 
           {/* Footer */}
           <div className="flex flex-col items-center gap-[6px] mt-6">
             <div className="w-10 h-px bg-[#ff6400]/25" />
-            <p
-              className="uppercase tracking-[0.3em] text-white/10"
-              style={{ fontFamily: "monospace", fontSize: "8px" }}
-            >
+            <p className="uppercase tracking-[0.3em] text-white/10 font-mono text-[8px]">
               Nexus Protocol v1.0.4 • 2026
             </p>
           </div>
@@ -277,15 +234,12 @@ export default function Profile() {
   );
 }
 
-// Sub-componentes auxiliares
+// Sub-componente de Seção
 function ProfileSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-[10px] pl-[2px]">
-        <span
-          className="uppercase tracking-[0.3em] text-white/20"
-          style={{ fontFamily: "monospace", fontSize: "9px" }}
-        >
+        <span className="uppercase tracking-[0.3em] text-white/20 font-mono text-[9px]">
           {label}
         </span>
         <div className="flex-1 h-px bg-white/[0.05]" />
@@ -295,6 +249,7 @@ function ProfileSection({ label, children }: { label: string; children: React.Re
   );
 }
 
+// Sub-componente de Item do Menu
 function ProfileMenuItem({
   icon: Icon,
   label,
@@ -323,8 +278,8 @@ function ProfileMenuItem({
         </div>
         <div className="text-left">
           <p
-            className="uppercase tracking-[0.06em] leading-none"
-            style={{ fontSize: "15px", fontWeight: 800, color: danger ? "#e05050" : "#fff" }}
+            className="uppercase tracking-[0.06em] leading-none font-extrabold text-[15px]"
+            style={{ color: danger ? "#e05050" : "#fff" }}
           >
             {label}
           </p>
