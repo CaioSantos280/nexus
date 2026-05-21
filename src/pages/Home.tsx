@@ -2,11 +2,11 @@ import MainLayout from "../layouts/MainLayout";
 import Topbar from "../components/dashboard/Topbar";
 import TodayWorkout from "../components/dashboard/TodayWorkout";
 import ActiveWorkout from "../components/workout/ActiveWorkout";
+import WorkoutList from "../components/workout/WorkoutList"; // Corrigido o 't' no final
 import BottomBar from "../components/dashboard/BottomBar";
 import { useWorkoutStore } from "../store/useWorkoutStore"; 
 import { motion, AnimatePresence } from "framer-motion";
 import { Trophy, Activity } from "lucide-react"; 
-// IMPORT QUE FALTA ABAIXO:
 import Card from "../components/ui/Card"; 
 
 export default function Home() {
@@ -41,8 +41,8 @@ export default function Home() {
             initial={{ opacity: 0, x: -20 }} 
             animate={{ opacity: 1, x: 0 }} 
             exit={{ opacity: 0, x: 20 }}
+            className="space-y-8" // Adicionei um espaçamento entre os cards
           >
-            {/* Agora o Card vai funcionar */}
             <Card className="mt-8 bg-gradient-to-br from-[#ff7a00] to-[#ff9533] border-none">
                <div className="flex justify-between items-start">
                   <div>
@@ -54,6 +54,12 @@ export default function Home() {
                   <Trophy className="text-black" size={32} />
                </div>
             </Card>
+
+            {/* WorkoutList agora funciona pois o import está correto */}
+            <WorkoutList onSelect={(name) => {
+                  console.log("Iniciando:", name);
+                  setIsTraining(true); 
+            }}/>
 
             <TodayWorkout onStart={() => setIsTraining(true)} />
           </motion.div>

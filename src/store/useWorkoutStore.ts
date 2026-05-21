@@ -12,7 +12,6 @@ interface WorkoutState {
   activeTab: string;
   restTime: number;
   sets: Set[];
-  // Ações
   setIsTraining: (state: boolean) => void;
   setActiveTab: (tab: string) => void;
   setRestTime: (time: number | ((prev: number) => number)) => void;
@@ -38,13 +37,7 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
   })),
 
   toggleSet: (id) => set((state) => ({
-    sets: state.sets.map((s) => {
-      if (s.id === id) {
-        const isNowCompleted = !s.completed;
-        return { ...s, completed: isNowCompleted };
-      }
-      return s;
-    })
+    sets: state.sets.map((s) => s.id === id ? { ...s, completed: !s.completed } : s)
   })),
 
   updateSet: (id, field, value) => set((state) => ({
