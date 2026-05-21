@@ -15,7 +15,7 @@ export default function WeeklyProgressCard() {
   }
 
   return (
-    <Card className="relative overflow-hidden rounded-[20px] border border-white/[0.06] bg-black/60 p-5 font-[Syne,sans-serif]">
+    <Card className="relative overflow-hidden rounded-[2px] border border-white/[0.06] bg-black/60 p-5 font-[Syne,sans-serif]">
       {/* stripe */}
       <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#ff6400] to-transparent" />
       {/* glow */}
