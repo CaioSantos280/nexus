@@ -14,40 +14,40 @@ export default function BottomBar({ activeTab, setActiveTab, isTraining }: Botto
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-8 pt-4">
-      <nav className="mx-auto flex max-w-md items-center justify-between rounded-[20px] border border-white/10 bg-zinc-900/80 p-2 backdrop-blur-xl shadow-2xl">
+      <nav className="mx-auto flex max-w-[340px] items-center justify-center gap-1 rounded-[22px] border border-white/10 bg-zinc-900/80 p-2 backdrop-blur-xl shadow-2xl">
         
         <TabItem 
-          icon={<Home size={24} />} 
+          icon={<Home size={22} />} 
           active={activeTab === "home"} 
           label="Home" 
           onClick={() => setActiveTab("home")} 
         />
         
         <TabItem 
-          icon={<BarChart2 size={24} />} 
+          icon={<BarChart2 size={22} />} 
           active={activeTab === "stats"} 
           label="Stats" 
           onClick={() => setActiveTab("stats")} 
         />
         
-        {/* Botão Central de Adicionar */}
+        {/* Botão Central de Adicionar - Reduzido para h-12 para harmonizar */}
         <motion.button 
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.9 }}
-          className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff7a00] text-black shadow-[0_8px_20px_-4px_rgba(255,122,0,0.5)] transition-shadow hover:shadow-[#ff7a00]/40"
+          className="mx-3 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#ff7a00] text-black shadow-lg shadow-[#ff7a00]/20 transition-shadow hover:shadow-[#ff7a00]/40"
         >
-          <Plus size={28} strokeWidth={3} />
+          <Plus size={24} strokeWidth={3} />
         </motion.button>
 
         <TabItem 
-          icon={<User size={24} />} 
+          icon={<User size={22} />} 
           active={activeTab === "profile"} 
           label="Profile" 
           onClick={() => setActiveTab("profile")} 
         />
         
         <TabItem 
-          icon={<Plus size={24} className="rotate-45" />} 
+          icon={<Plus size={22} className="rotate-45" />} 
           active={activeTab === "more"} 
           label="More" 
           onClick={() => setActiveTab("more")} 

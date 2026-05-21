@@ -43,35 +43,27 @@ export default function Home() {
             exit={{ opacity: 0, x: 20 }}
             className="space-y-8" // Adicionei um espaçamento entre os cards
           >
-            <Card className="mt-8 overflow-hidden bg-gradient-to-br from-[#ff7a00] to-[#ff9533] border-none relative group">
-  {/* Detalhe de luz de fundo */}
-  <div className="absolute -right-10 -top-10 h-40 w-40 bg-white/20 blur-[50px] rounded-full transition-transform group-hover:scale-150 duration-700" />
-  
-  <div className="flex justify-between items-start relative z-10">
-    <div>
-      <span className="flex items-center gap-2 text-[10px] font-[900] uppercase tracking-widest text-black/80 bg-black/10 px-3 py-1 rounded-full w-fit">
-        <Activity size={12} strokeWidth={3} /> Weekly Progress
-      </span>
-      
-      <div className="flex items-baseline gap-1 mt-4">
-        <motion.h2 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="text-8xl font-[1000] italic tracking-[calc(-0.05em)] text-black leading-none"
-        >
-          5<span className="text-black/30 font-black">/</span>7
-        </motion.h2>
+            {/* Na sua Home.tsx, no Card laranja */}
+<Card className="mt-8 bg-gradient-to-br from-[#ff7a00] to-[#ff9533] border-none rounded-[20px] p-6 min-h-[160px]">
+   <div className="flex flex-col h-full justify-between">
+      <div className="flex justify-between items-start">
+         <div className="space-y-1">
+            <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-black/60 bg-black/5 px-3 py-1 rounded-full w-fit">
+               <Activity size={12} strokeWidth={3} /> Weekly Progress
+            </span>
+            <h2 className="text-7xl font-[1000] italic tracking-tighter text-black leading-none pt-2">
+               5<span className="opacity-20">/</span>7
+            </h2>
+         </div>
+         <div className="bg-black p-3 rounded-xl shadow-xl">
+            <Trophy className="text-[#ff7a00]" size={24} />
+         </div>
       </div>
-      
-      <p className="mt-4 text-[10px] font-black uppercase text-black/60 tracking-widest">
-        2 more days to hit your goal!
+
+      <p className="text-[10px] font-black uppercase tracking-widest text-black/80 mt-4">
+         ⚡ 2 more days to hit your goal!
       </p>
-    </div>
-    
-    <div className="h-14 w-14 bg-black rounded-2xl flex items-center justify-center shadow-2xl">
-      <Trophy className="text-[#ff7a00]" size={28} />
-    </div>
-  </div>
+   </div>
 </Card>
 
             {/* WorkoutList agora funciona pois o import está correto */}
