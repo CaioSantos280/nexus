@@ -9,7 +9,7 @@ export default function Card({ children, className = "" }: Props) {
       className={`
         relative
         overflow-hidden
-        rounded-[36px]
+        rounded-[20px]
         border border-white/[0.05]
         bg-zinc-900/40
         p-6

@@ -14,7 +14,7 @@ export default function BottomBar({ activeTab, setActiveTab, isTraining }: Botto
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-8 pt-4">
-      <nav className="mx-auto flex max-w-md items-center justify-between rounded-[32px] border border-white/10 bg-zinc-900/80 p-2 backdrop-blur-xl shadow-2xl">
+      <nav className="mx-auto flex max-w-md items-center justify-between rounded-[20px] border border-white/10 bg-zinc-900/80 p-2 backdrop-blur-xl shadow-2xl">
         
         <TabItem 
           icon={<Home size={24} />} 
