@@ -1,32 +1,55 @@
+import { useState, useEffect } from "react";
 import { Flame } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function Topbar() {
+  const [time, setTime] = useState(new Date());
+
+  // Efeito para atualizar o relógio a cada minuto
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedTime = time.toLocaleTimeString([], { 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+
   return (
-    <header className="flex items-center justify-between py-2">
-      <div className="flex items-center gap-4">
-        {/* Avatar com Gradiente de Border */}
-        <div className="relative p-[2px] rounded-full bg-gradient-to-tr from-[#ff7a00] to-yellow-400 shadow-lg shadow-orange-500/20">
-          <div className="h-14 w-14 rounded-full bg-zinc-900 border-2 border-black overflow-hidden bg-[url('https://api.dicebear.com/7.x/avataaars/svg?seed=Caio')] bg-cover" />
+    <header className="flex items-center justify-between pt-4 px-2">
+      <div className="flex items-center gap-3">
+        {/* Foto do Usuário com Glow */}
+        <div className="relative">
+          <div className="absolute inset-0 bg-[#ff7a00] blur-md opacity-20 rounded-full" />
+          <img 
+            src="https://github.com/seu-usuario.png" // Troque pelo seu link ou GitHub
+            alt="User"
+            className="h-12 w-12 rounded-2xl border-2 border-white/10 object-cover relative z-10"
+          />
+          <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-[#ff7a00] border-2 border-black rounded-full" />
         </div>
-        
+
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 leading-none">
-            Welcome back
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 leading-none">
+            Welcome Back
           </p>
-          <h1 className="mt-1 text-3xl font-[950] tracking-tight leading-none">
-            Caio <span className="text-[#ff7a00]">.</span>
+          <h1 className="text-2xl font-[900] italic text-white tracking-tighter">
+            CAIO<span className="text-[#ff7a00]">.</span>
           </h1>
         </div>
       </div>
 
-      <motion.button 
-        whileTap={{ scale: 0.9 }}
-        className="relative h-12 w-12 flex items-center justify-center rounded-2xl bg-[#121214] border border-white/5"
-      >
-        <div className="absolute top-0 right-0 h-2 w-2 bg-[#ff7a00] rounded-full border-2 border-black z-10" />
-        <Flame className="text-[#ff7a00] fill-[#ff7a00]/10" size={24} />
-      </motion.button>
+      {/* Relógio e Streak */}
+      <div className="flex items-center gap-3">
+        <div className="text-right mr-2">
+          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{formattedTime}</p>
+          <p className="text-[10px] font-bold text-[#ff7a00]">LIVE</p>
+        </div>
+        
+        <button className="h-12 w-12 rounded-2xl bg-zinc-900/50 border border-white/5 flex items-center justify-center text-[#ff7a00] shadow-inner">
+          <Flame size={24} fill="currentColor" className="animate-pulse" />
+        </button>
+      </div>
     </header>
   );
 }

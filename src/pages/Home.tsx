@@ -43,17 +43,36 @@ export default function Home() {
             exit={{ opacity: 0, x: 20 }}
             className="space-y-8" // Adicionei um espaçamento entre os cards
           >
-            <Card className="mt-8 bg-gradient-to-br from-[#ff7a00] to-[#ff9533] border-none">
-               <div className="flex justify-between items-start">
-                  <div>
-                    <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/60 bg-black/5 px-3 py-1 rounded-full">
-                      <Activity size={12} /> Weekly Progress
-                    </span>
-                    <h2 className="text-8xl font-black italic tracking-tighter text-black mt-4 leading-none">5/7</h2>
-                  </div>
-                  <Trophy className="text-black" size={32} />
-               </div>
-            </Card>
+            <Card className="mt-8 overflow-hidden bg-gradient-to-br from-[#ff7a00] to-[#ff9533] border-none relative group">
+  {/* Detalhe de luz de fundo */}
+  <div className="absolute -right-10 -top-10 h-40 w-40 bg-white/20 blur-[50px] rounded-full transition-transform group-hover:scale-150 duration-700" />
+  
+  <div className="flex justify-between items-start relative z-10">
+    <div>
+      <span className="flex items-center gap-2 text-[10px] font-[900] uppercase tracking-widest text-black/80 bg-black/10 px-3 py-1 rounded-full w-fit">
+        <Activity size={12} strokeWidth={3} /> Weekly Progress
+      </span>
+      
+      <div className="flex items-baseline gap-1 mt-4">
+        <motion.h2 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="text-8xl font-[1000] italic tracking-[calc(-0.05em)] text-black leading-none"
+        >
+          5<span className="text-black/30 font-black">/</span>7
+        </motion.h2>
+      </div>
+      
+      <p className="mt-4 text-[10px] font-black uppercase text-black/60 tracking-widest">
+        2 more days to hit your goal!
+      </p>
+    </div>
+    
+    <div className="h-14 w-14 bg-black rounded-2xl flex items-center justify-center shadow-2xl">
+      <Trophy className="text-[#ff7a00]" size={28} />
+    </div>
+  </div>
+</Card>
 
             {/* WorkoutList agora funciona pois o import está correto */}
             <WorkoutList onSelect={(name) => {
