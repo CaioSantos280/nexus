@@ -22,7 +22,7 @@ export default function Topbar() {
         <div className="relative">
           <div className="absolute inset-0 bg-[#ff7a00] blur-md opacity-20 rounded-full" />
           <img 
-            src="https://github.com/seu-usuario.png" // Troque pelo seu link ou GitHub
+            src="https://github.com/user.png" // Troque pelo seu link ou GitHub
             alt="User"
             className="h-12 w-12 rounded-2xl border-2 border-white/10 object-cover relative z-10"
           />
@@ -34,7 +34,7 @@ export default function Topbar() {
             Welcome Back
           </p>
           <h1 className="text-2xl font-[900] italic text-white tracking-tighter">
-            CAIO<span className="text-[#ff7a00]">.</span>
+            User<span className="text-[#ff7a00]">.</span>
           </h1>
         </div>
       </div>

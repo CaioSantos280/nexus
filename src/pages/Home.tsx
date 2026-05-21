@@ -44,26 +44,29 @@ export default function Home() {
             className="space-y-8" // Adicionei um espaçamento entre os cards
           >
             {/* Na sua Home.tsx, no Card laranja */}
-<Card className="mt-8 bg-gradient-to-br from-[#ff7a00] to-[#ff9533] border-none rounded-[20px] p-6 min-h-[160px]">
-   <div className="flex flex-col h-full justify-between">
-      <div className="flex justify-between items-start">
-         <div className="space-y-1">
-            <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-black/60 bg-black/5 px-3 py-1 rounded-full w-fit">
-               <Activity size={12} strokeWidth={3} /> Weekly Progress
-            </span>
-            <h2 className="text-7xl font-[1000] italic tracking-tighter text-black leading-none pt-2">
-               5<span className="opacity-20">/</span>7
-            </h2>
-         </div>
-         <div className="bg-black p-3 rounded-xl shadow-xl">
-            <Trophy className="text-[#ff7a00]" size={24} />
-         </div>
+<Card className="mt-8 bg-gradient-to-br from-[#ff7a00] to-[#ff9533] border-none rounded-[20px] p-6">
+  <div className="flex flex-col gap-2">
+    <div className="flex justify-between items-start">
+      <div className="space-y-1 pl-2"> {/* pl-2 empurra o conteúdo levemente para a direita */}
+        <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-black/60 bg-black/10 px-3 py-1 rounded-full w-fit">
+          <Activity size={12} strokeWidth={3} /> Weekly Progress
+        </span>
+        
+        {/* Diminuí o texto e ajustei o leading */}
+        <h2 className="text-6xl font-[1000] italic tracking-tighter text-black leading-none pt-4">
+          5<span className="opacity-20">/</span>7
+        </h2>
       </div>
 
-      <p className="text-[10px] font-black uppercase tracking-widest text-black/80 mt-4">
-         ⚡ 2 more days to hit your goal!
-      </p>
-   </div>
+      <div className="bg-black p-3 rounded-xl shadow-2xl">
+        <Trophy className="text-[#ff7a00]" size={24} />
+      </div>
+    </div>
+
+    <p className="text-[10px] font-black uppercase tracking-widest text-black/80 pl-2 mt-2">
+      ⚡ 2 more days to hit your goal!
+    </p>
+  </div>
 </Card>
 
             {/* WorkoutList agora funciona pois o import está correto */}
