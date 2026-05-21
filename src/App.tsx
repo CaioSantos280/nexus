@@ -4,6 +4,8 @@ import Stats from "./pages/Stats";
 import { useWorkoutStore } from "./store/useWorkoutStore";
 import { AnimatePresence, motion } from "framer-motion";
 import BottomBar from "./components/dashboard/BottomBar";
+import Profile from "./pages/Profile";
+import More from "./pages/More";
 
 export default function App() {
   const activeTab = useWorkoutStore((state) => state.activeTab);
@@ -34,10 +36,13 @@ export default function App() {
   }, [lastScrollY]);
 
   return (
+    
     <div className="relative min-h-screen bg-[#050505]">
       <AnimatePresence mode="wait">
         {activeTab === 'home' && <Home key="home" />}
         {activeTab === 'stats' && <Stats key="stats" />}
+        {activeTab === 'profile' && <Profile key="profile" />}
+        {activeTab === 'more' && <More key="more" />}
       </AnimatePresence>
 
       {/* Barra animada que foge do scroll */}
