@@ -1,7 +1,6 @@
 import { Home, BarChart2, User, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Definindo as Props com a função de mudar de aba
 interface BottomBarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
@@ -9,7 +8,7 @@ interface BottomBarProps {
 }
 
 export default function BottomBar({ activeTab, setActiveTab, isTraining }: BottomBarProps) {
-  // Se estiver treinando, a barra some para foco total na execução
+  // Se estiver treinando, esconde a barra para foco total
   if (isTraining) return null;
 
   return (
@@ -58,7 +57,6 @@ export default function BottomBar({ activeTab, setActiveTab, isTraining }: Botto
   );
 }
 
-// Sub-componente de Item da Tab corrigido com onClick
 function TabItem({ 
   icon, 
   active, 
@@ -74,7 +72,7 @@ function TabItem({
     <motion.button
       whileTap={{ scale: 0.9 }}
       onClick={onClick}
-      className={`relative flex flex-col items-center gap-1 px-4 py-2 transition-all duration-300 ${
+      className={`relative flex flex-1 flex-col items-center gap-1 px-1 py-2 transition-all duration-300 ${
         active ? "text-[#ff7a00]" : "text-zinc-500 hover:text-zinc-300"
       }`}
     >
@@ -88,16 +86,16 @@ function TabItem({
         )}
       </div>
 
+      <span className="text-[9px] font-black uppercase tracking-tighter leading-none">
+        {label}
+      </span>
+
       {active && (
         <motion.div 
           layoutId="activeTabDot"
           className="absolute -bottom-1 h-1 w-1 rounded-full bg-[#ff7a00]" 
         />
       )}
-      
-      <span className="text-[10px] font-black uppercase tracking-tighter leading-none">
-        {label}
-      </span>
     </motion.button>
   );
 }
