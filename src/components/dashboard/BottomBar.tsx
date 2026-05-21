@@ -12,7 +12,7 @@ export default function BottomBar({ activeTab, setActiveTab, isTraining }: Botto
   if (isTraining) return null;
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 w-full max-w-[400px] px-6 pb-8 pt-4">
+    <div className="w-full max-w-[400px] mx-auto px-6 pb-8 pt-4">
       <nav className="flex items-center justify-center gap-1 rounded-[22px] border border-white/10 bg-zinc-900/80 p-2 backdrop-blur-xl shadow-2xl">
         
         <TabItem 

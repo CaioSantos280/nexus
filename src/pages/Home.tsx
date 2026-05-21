@@ -3,7 +3,6 @@ import Topbar from "../components/dashboard/Topbar";
 import TodayWorkout from "../components/dashboard/TodayWorkout";
 import ActiveWorkout from "../components/workout/ActiveWorkout";
 import WorkoutList from "../components/workout/WorkoutList";
-import BottomBar from "../components/dashboard/BottomBar";
 import WeeklyProgressCard from "../components/ui/WeeklyProgressCard"; 
 import { useWorkoutStore } from "../store/useWorkoutStore"; 
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,8 +10,6 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Home() {
   const isTraining = useWorkoutStore((state) => state.isTraining);
   const setIsTraining = useWorkoutStore((state) => state.setIsTraining);
-  const activeTab = useWorkoutStore((state) => state.activeTab);
-  const setActiveTab = useWorkoutStore((state) => state.setActiveTab);
   
 
   return (
@@ -56,11 +53,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      <BottomBar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        isTraining={isTraining} 
-      />
+      
     </MainLayout>
   );
 }
