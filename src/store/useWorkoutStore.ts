@@ -1,6 +1,13 @@
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 
+export interface WorkoutSet {
+  id: string;
+  reps: number;
+  weight: number;
+  completed: boolean;
+}
+
 interface UserProfile {
   firstName: string;
   weight: string;
@@ -10,24 +17,31 @@ interface UserProfile {
 }
 
 interface WorkoutState {
-  activeTab: string; 
+  activeTab: string;
   setActiveTab: (tab: string) => void;
   isTraining: boolean;
+  setIsTraining: (val: boolean) => void;
   user: UserProfile | null;
   weeklyProgress: { day: string; completed: boolean }[];
-  setIsTraining: (val: boolean) => void;
+  
+  // --- ESTADOS DO TREINO ATIVO ---
+  sets: WorkoutSet[];
+  restTime: number;
+  setRestTime: (time: number | ((t: number) => number)) => void;
+  toggleSet: (id: string) => void;
+  updateSet: (id: string, field: 'reps' | 'weight', value: number) => void;
+  
+  // --- FUNÇÕES DE DADOS ---
   fetchUserData: () => Promise<void>;
-  // --- NOVA FUNÇÃO NA INTERFACE ---
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
-  // -------------------------------
   logout: () => Promise<void>;
 }
 
 export const useWorkoutStore = create<WorkoutState>((set, get) => ({
-  activeTab: 'home', 
+  activeTab: 'home',
   setActiveTab: (tab) => set({ activeTab: tab }),
-
   isTraining: false,
+  setIsTraining: (val) => set({ isTraining: val }),
   user: null,
   weeklyProgress: [
     { day: "M", completed: true },
@@ -38,8 +52,33 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     { day: "S", completed: false },
     { day: "S", completed: false },
   ],
-  setIsTraining: (val) => set({ isTraining: val }),
 
+  // --- LOGICA DE SETS ---
+  sets: [
+    { id: '1', reps: 12, weight: 20, completed: false },
+    { id: '2', reps: 10, weight: 22, completed: false },
+    { id: '3', reps: 8, weight: 24, completed: false },
+  ],
+  restTime: 0,
+
+  setRestTime: (time) => 
+    set((state) => ({ 
+      restTime: typeof time === 'function' ? time(state.restTime) : time 
+    })),
+
+  toggleSet: (id) => set((state) => ({
+    sets: state.sets.map(s => 
+      s.id === id ? { ...s, completed: !s.completed } : s
+    )
+  })),
+
+  updateSet: (id, field, value) => set((state) => ({
+    sets: state.sets.map(s => 
+      s.id === id ? { ...s, [field]: value } : s
+    )
+  })),
+
+  // --- SUPABASE ---
   fetchUserData: async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
@@ -55,9 +94,7 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
     }
   },
 
-  // --- IMPLEMENTAÇÃO DA NOVA FUNÇÃO ---
   updateProfile: async (updates) => {
-    // 1. Atualiza no Supabase Auth (metadados)
     const { error } = await supabase.auth.updateUser({
       data: {
         first_name: updates.firstName,
@@ -71,15 +108,11 @@ export const useWorkoutStore = create<WorkoutState>((set, get) => ({
       return;
     }
 
-    // 2. Atualiza o estado local para o app refletir a mudança na hora
     const currentUser = get().user;
     if (currentUser) {
-      set({
-        user: { ...currentUser, ...updates }
-      });
+      set({ user: { ...currentUser, ...updates } });
     }
   },
-  // ------------------------------------
 
   logout: async () => {
     await supabase.auth.signOut();

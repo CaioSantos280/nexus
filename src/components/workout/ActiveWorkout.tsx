@@ -1,32 +1,40 @@
 import { useEffect } from "react";
-import { useWorkoutStore } from "../../store/useWorkoutStore";
-import { Check, Clock} from "lucide-react"; 
+import { useWorkoutStore, type WorkoutSet } from "../../store/useWorkoutStore"; // Adicionado 'type' para o import
+import { Check, Clock } from "lucide-react"; 
 import { motion, AnimatePresence } from "framer-motion";
-import Card from "../ui/Card"; // Import agora será utilizado
+import Card from "../ui/Card";
 
 export default function ActiveWorkout() {
-  const { sets, toggleSet, updateSet, restTime, setRestTime } = useWorkoutStore();
+  // Use seletores individuais para evitar erros de renderização
+  const sets = useWorkoutStore((state) => state.sets) || [];
+  const toggleSet = useWorkoutStore((state) => state.toggleSet);
+  const updateSet = useWorkoutStore((state) => state.updateSet);
+  const restTime = useWorkoutStore((state) => state.restTime);
+  const setRestTime = useWorkoutStore((state) => state.setRestTime);
 
-  // Timer de descanso
+  // Timer de descanso corrigido para Browser (Window)
   useEffect(() => {
-    let interval: any;
+    let interval: number; // Mude de NodeJS.Timeout para number para evitar erro no Vite/Browser
     if (restTime > 0) {
-      interval = setInterval(() => setRestTime((t) => (typeof t === 'number' ? t - 1 : t)), 1000);
+      interval = window.setInterval(() => {
+        setRestTime((t: number) => (t > 0 ? t - 1 : 0));
+      }, 1000);
     }
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
   }, [restTime, setRestTime]);
 
-  const handleCheck = (id: number) => {
+  const handleCheck = (id: string) => {
+    const currentSet = sets.find((s: WorkoutSet) => s.id === id);
     toggleSet(id);
-    const set = sets.find(s => s.id === id);
-    if (!set?.completed) { 
-      setRestTime(90); // 90 segundos de descanso ao completar
+    
+    if (currentSet && !currentSet.completed) { 
+      setRestTime(90); 
     }
   };
 
   return (
     <div className="space-y-6 pb-20">
-      {/* Header do Exercício */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-[900] italic uppercase tracking-tighter text-white">
           Bench Press
@@ -34,20 +42,21 @@ export default function ActiveWorkout() {
         <div className="flex gap-2">
           <div className="flex items-center gap-1 bg-zinc-900 px-3 py-1 rounded-full border border-white/5">
             <Clock size={14} className="text-[#ff7a00]" />
-            <span className="text-[10px] font-bold">12:45</span>
+            <span className="text-[10px] font-bold text-white">12:45</span>
           </div>
         </div>
       </div>
       
-      {/* Timer de Descanso com Card */}
+      {/* Timer de Descanso */}
       <AnimatePresence>
         {restTime > 0 && (
           <motion.div 
             initial={{ height: 0, opacity: 0, scale: 0.9 }} 
             animate={{ height: "auto", opacity: 1, scale: 1 }} 
             exit={{ height: 0, opacity: 0, scale: 0.9 }}
+            className="overflow-hidden"
           >
-            <Card className="bg-[#ff7a00] border-none shadow-[0_20px_40px_-15px_rgba(255,122,0,0.3)]">
+            <Card className="bg-[#ff7a00] border-none shadow-[0_20px_40px_-15px_rgba(255,122,0,0.3)] mb-4">
               <div className="flex justify-between items-center text-black">
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest opacity-60">Rest Time</p>
@@ -65,7 +74,7 @@ export default function ActiveWorkout() {
         )}
       </AnimatePresence>
 
-      {/* Listagem de Sets usando o componente Card */}
+      {/* Listagem de Sets */}
       <div className="space-y-3">
         <div className="grid grid-cols-4 px-6 text-[10px] font-black uppercase tracking-widest text-zinc-500">
           <span>Set</span>
@@ -74,7 +83,7 @@ export default function ActiveWorkout() {
           <span className="text-right">Done</span>
         </div>
 
-        {sets.map((set, index) => (
+        {sets.map((set: WorkoutSet, index: number) => (
           <Card 
             key={set.id} 
             className={`transition-all duration-300 ${
